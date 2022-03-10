@@ -1,0 +1,20 @@
+{
+  "patients": [
+    {
+      "patient": {
+        "firstName": "pedro",
+        "lastName": "ramos",
+        "birthday": "",
+        "gender": "Male"
+      }
+    },
+    {
+      "patient": {
+        "firstName": "maria",
+        "lastName": "ramos",
+        "birthday": "10-02-2010",
+        "gender": "Female"
+      }
+    }
+  ]
+}

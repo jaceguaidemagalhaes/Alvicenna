@@ -1,0 +1,11 @@
+{
+  "patients": [
+    { "patient": {
+      "firstName": "pedro",
+      "lastName": "ramos",
+      "birthday": "12/02/1978",
+      "gender": "Male"
+    }
+    }
+  ]
+}
