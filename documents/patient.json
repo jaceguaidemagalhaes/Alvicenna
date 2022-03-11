@@ -5,16 +5,27 @@
         "firstName": "pedro",
         "lastName": "ramos",
         "birthday": "",
-        "gender": "Male"
+        "gender": "Male",
+        "email": "pedro@test.com"
       }
     },
     {
       "patient": {
         "firstName": "maria",
         "lastName": "ramos",
-        "birthday": "10-02-2010",
-        "gender": "Female"
+        "birthday": "10/02/2010",
+        "gender": "",
+        "email": "pedro@test.com"
       }
-    }
+    },
+    {
+      "patient": {
+        "firstName": "patients",
+        "lastName": "patient",
+        "birthday": "10/02/2010",
+        "gender": "Female",
+        "email": ""
+      }
+      }
   ]
 }
