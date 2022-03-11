@@ -1,6 +1,6 @@
 package alvicenna
 
-object jason {
+object JSON {
   import java.util.Date
   import scala.Array.ofDim
   import scala.collection.mutable.ArrayBuffer
@@ -47,10 +47,6 @@ object jason {
     index += 1
     nItr += 1}
 
-  //data conversion to use just if need
-  def convertToDate(pDate: String, pformat: String): Date={
-    val dateJSON = new java.text.SimpleDateFormat(pformat)
-    val a = dateJSON.parse(pDate)
-    return a}
+
 
 }

@@ -1,23 +1,15 @@
 package alvicenna
 
-import java.sql.SQLException
+import scala.sys.process._
 
 object Main extends App {
-    var helloword = new HelloWord()
-    helloword
-    var data = new ExecuteQuery("SELECT id, first, last, age FROM Registration")
-    try while ( {
-        data.resultSet.next
-    }) { //Display values
-        System.out.print("ID: " + data.resultSet.getInt("id"))
-        System.out.print(", Age: " + data.resultSet.getInt("age"))
-        System.out.print(", First: " + data.resultSet.getString("first"))
-        System.out.println(", Last: " + data.resultSet.getString("last"))
-    }
-    catch {
-        case e: SQLException =>
-            e.printStackTrace()
-    }finally {
-        if(data.connection != null)data.connection.close()
-    }
+    print("\u001b[2J")
+//    var helloword = new HelloWord()
+//    helloword
+
+    var patient = new Patient()
+    patient.readAll()
+
+//    call create patient
+//    patient.create()
 }
