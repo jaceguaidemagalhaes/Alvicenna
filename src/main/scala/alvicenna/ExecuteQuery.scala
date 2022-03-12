@@ -7,7 +7,7 @@ class ExecuteQuery(query: String = "", isSelect: Boolean = true) {
       //val driver = "com.mysql.jdbc.Driver"
       val driver = "com.mysql.cj.jdbc.Driver"
       val url = "jdbc:mysql://localhost:3306/alvicenna"
-      val username = "jaceguai"
+      val username = "alvicenna_admin"
       val password = "password"
 
       // there's probably a better way to do this
@@ -30,8 +30,8 @@ class ExecuteQuery(query: String = "", isSelect: Boolean = true) {
         }else{
           statement.executeUpdate(query)
         }
-        val durationQ = (System.currentTimeMillis - startQ)/1000
-        println(s"Query executed. Execution time = $durationQ seconds")
+        val durationQ = (System.currentTimeMillis - startQ)
+        println(s"Query executed. Execution time = $durationQ ms")
       } catch {
         case e: Throwable => e.printStackTrace
         println("Error Executing Query")
