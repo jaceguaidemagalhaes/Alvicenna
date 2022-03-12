@@ -6,13 +6,20 @@ object Main extends App {
     print("\u001b[2J")
 //    var helloword = new HelloWord()
 //    helloword
-
+    var defaultUser = 1
+    var defaultPatient = 1
     // Patien Class
     var patient = new Patient()
-    //patient.readAll()
+    //patient.read()
     //    call create patient
-    //    patient.create()
-    patient.readJSON()
+    //patient.create()
+    //patient.readJSON()
+    patient.read(4)
+    println("my message fora de escopo")
+    patient.read(400)
+    print("\u001bc")
+    //print("\u033c")
+
 
     // JSONReader class
     //var path = "/Users/jay85mag/Library/CloudStorage/OneDrive-Personal/00Revature/projects/PHM_CLI/documents/patient2.json"
