@@ -4,6 +4,13 @@ import scala.io.StdIn.readLine
 import java.nio.file.{Files, Paths}
 
 class Patient {
+  //class configuration
+  def className = this.getClass.getSimpleName
+  println("class: "+ className)
+  var tag = Array("patients", className.toLowerCase())
+  var elements = 5
+
+
   //class properties section
   var patientId:Int = 0
   var firstName:String = ""
@@ -11,13 +18,14 @@ class Patient {
   var birthDate:String = ""
   var gender:String = ""
   var patientEmail:String = ""
-  var userId = 1
-
+  var dataMap:Map[Int,(String,String,String,String,String)] = null
   //private variables section
   var query = ""
   var executeQuery:ExecuteQuery = null
   var path = ""
   var rowValue = ""
+
+
 
   //class methods section
 
@@ -32,18 +40,18 @@ class Patient {
     }
 
     if(defaultPath == "Y"){
-      path = System.getProperty("user.dir")+"/JSONFiles/patient.json"
+      path = System.getProperty("user.dir")+"/JSONFiles/+"+className.toLowerCase()+".json"
     } else if(defaultPath == "N"){
-      while(path.toLowerCase().contains("patient.json") != true && path.toLowerCase() != "canceln" ){
-        println("Give de location of file \"patient.json\". (Type cancel to exit)")
+      while(path.toLowerCase().contains(className.toLowerCase()+".json") != true && path.toLowerCase() != "cancel"){
+        println("Give de location of file \""+className.toLowerCase()+".json\". (Type cancel to exit)")
         print("> ")
         path = readLine().trim()
       }
     }
 
     if(Files.exists(Paths.get(path))){
-        var tag = Array("patients", "patient")
-        var elements = 5
+//        var tag = Array("patients", "patient")
+//        var elements = 5
         var jasonreader = new JSONReader(path, tag, elements)
 
       // create query
@@ -59,7 +67,7 @@ class Patient {
           "," + reverseDate(jasonreader.JSONData(i)(2)) +
           ",\"" + jasonreader.JSONData(i)(3) + "\"" +
           ",\"" + jasonreader.JSONData(i)(4) + "\"" +
-          ", " + userId + ")"
+          ", " + Main.defaultUser + ")"
 
         partialQuery += rowValue
         println(partialQuery)
@@ -75,33 +83,9 @@ class Patient {
 
         //end for loop
       }
-
-
-
-
-
-//        println(jasonreader.JSONData.length-2)
-//        println(jasonreader.JSONData(0)(0))
-//        println(jasonreader.JSONData(0)(1))
-//        println(jasonreader.JSONData(0)(2))
-//        println(jasonreader.JSONData(0)(3))
-//        println(jasonreader.JSONData(0)(4))
-//        println(jasonreader.JSONData.length-1)
-//        println(jasonreader.JSONData(1)(0))
-//        println(jasonreader.JSONData(1)(1))
-//        println(jasonreader.JSONData(1)(2))
-//        println(jasonreader.JSONData(1)(3))
-//        println(jasonreader.JSONData(1)(4))
-//        println(jasonreader.JSONData.length-0)
-//        println(jasonreader.JSONData(2)(0))
-//        println(jasonreader.JSONData(2)(1))
-//        println(jasonreader.JSONData(2)(2))
-//        println(jasonreader.JSONData(2)(3))
-//        println(jasonreader.JSONData(2)(4))
     } else {
         println("JSON file does not exists in the location.")
     }
-
 
     //end readJSON
   }
@@ -112,18 +96,23 @@ class Patient {
 
     try{
       println("Patient First Name?")
+      print("> ")
       firstName = readLine().trim()
       println("Last Name?")
+      print("> ")
       lastName = readLine().trim()
       println("Date of Birth? format(MM/dd/yyyy")
+      print("> ")
       birthDate = readLine().trim()
       println("Email?")
+      print("> ")
       patientEmail = readLine().trim()
       println("Gender?")
+      print("> ")
       gender = readLine().trim()
       birthDate = reverseDate(birthDate)
       query = (s"INSERT INTO patient (firstName, lastName, birthDate, gender, patientEmail, userId)" +
-        s""" VALUES("$firstName", "$lastName", $birthDate, "$gender", "$patientEmail", $userId)""")
+        s""" VALUES("$firstName", "$lastName", $birthDate, "$gender", "$patientEmail", ${Main.defaultUser})""")
       executeQuery = new ExecuteQuery(query, false)
       println(s"Patient $firstName $lastName created")
     }catch {
@@ -135,22 +124,50 @@ class Patient {
     //end create patient
   }
 
-  def readAll(): Unit={
+  def read(p_tableId: Int = 0): Unit={
 
     try{
-      query = "SELECT * FROM patient"
+      if(p_tableId == 0){
+        query = "SELECT * FROM "+className+" where userId = "+Main.defaultUser
+      } else{
+        query = "SELECT * FROM "+className+" where userId = "+Main.defaultUser+ " and "+className+"Id = "+p_tableId
+      }
       executeQuery = new ExecuteQuery(query, true)
+
+      var objectMap:scala.collection.mutable.Map[Int,(String,String,String,String,String)]
+      = scala.collection.mutable.Map(0 -> (null,null,null,null,null))
+      objectMap -= 0
       try while ( {
         executeQuery.resultSet.next
       }) {
+        //load map with values
+        patientId = executeQuery.resultSet.getInt("patientId")
+        firstName = executeQuery.resultSet.getString("firstName")
+        lastName = executeQuery.resultSet.getString("lastName")
+        birthDate = executeQuery.resultSet.getString("birthDate")
+        gender = executeQuery.resultSet.getString("gender")
+        patientEmail = executeQuery.resultSet.getString("patientEmail")
+
+        objectMap += (patientId -> (firstName,lastName,birthDate,gender,patientEmail))
+
         //Display values
-        System.out.print("Patient ID: " + executeQuery.resultSet.getInt("patientId"))
-        System.out.print(", Name: " + executeQuery.resultSet.getString("firstName"))
-        System.out.print(" " + executeQuery.resultSet.getString("lastName"))
-        System.out.print(", Birth Date: " + executeQuery.resultSet.getString("birthDate"))
-        System.out.print(", Gender: " + executeQuery.resultSet.getString("gender"))
-        System.out.println(", Email: " + executeQuery.resultSet.getString("patientEmail"))
+        System.out.print("Patient ID: " + patientId)
+        System.out.print(", Name: " + firstName)
+        System.out.print(" " + lastName)
+        System.out.print(", Birth Date: " + birthDate)
+        System.out.print(", Gender: " + gender)
+        System.out.println(", Email: " + patientEmail)
       }
+
+      if(p_tableId != 0 && objectMap.size == 0){
+        println("There is no Patient with Id = "+p_tableId)
+      } else if(p_tableId == 0 && objectMap.size == 0){
+        println("Table patient is empty. Create a patient before proceed")
+      } else {
+        dataMap = objectMap.toMap
+      }
+
+
     }catch {
       case e: Throwable => e.printStackTrace
         println("Error Reading All Patients")
