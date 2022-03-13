@@ -35,12 +35,14 @@ object Main extends App {
         println()
         println(s"${RESET}${BLUE}1 -> Patient${RESET}")
         println(s"${RESET}${BLUE}2 -> Health Data${RESET}")
+        println(s"${RESET}${BLUE}3 -> Medicine${RESET}")
         println(s"${RESET}${BLUE}0 -> Exit APP${RESET}")
         print(s"> ")
         option = readLine().trim()
         option match {
             case "1" => patientScreen()
             case "2" => selectPatientScreen()
+            case "3" => medicineScreen()
             case "0" => {
                 println("Exit APP")
                 exit = true
@@ -50,6 +52,42 @@ object Main extends App {
         }
         //end main screen
     }
+
+    def medicineScreen(): Unit ={
+        var medicine = new Medicine()
+        var localOption = ""
+        var localExit = false
+        topScreen()
+        do {
+            println()
+            println(s"               ${RESET}${GREEN_B}${BOLD}Mecine Screen${RESET}")
+            println()
+            println(s"${RESET}${BLUE}${BOLD}Select your option: (Type your option number)${RESET}")
+            println()
+            println(s"${RESET}${BLUE}1 -> Insert new Medicine${RESET}")
+            println(s"${RESET}${BLUE}2 -> List Medicines${RESET}")
+            println(s"${RESET}${BLUE}3 -> Read JSON file${RESET}")
+            println(s"${RESET}${BLUE}4 -> Delete Medicine${RESET}")
+            println(s"${RESET}${BLUE}5 -> Return to Main Screen${RESET}")
+            println(s"${RESET}${BLUE}0 -> Exit APP${RESET}")
+            print(s"> ")
+            localOption = readLine().trim()
+            localOption match {
+                case "1" => medicine.create()
+                case "2" => medicine.read()
+                case "3" => println("Under Construction")
+                case "4" => medicine.delete()
+                case "5" => localExit = true
+                case "0" => { localExit = true
+                    exit = true}
+                case other => println(s"${RESET}${RED}Wrong option!${RESET}")
+            }
+            // end match
+        }
+        while (!localExit)
+        //end medicineScreen
+    }
+
 
     def selectPatientScreen(): Unit ={
         topScreen()
@@ -97,7 +135,7 @@ object Main extends App {
             // end match
         }
         while (!localExit)
-        //end patientScreen
+        //end healthDateScreen
     }
 
     def patientScreen(): Unit ={
