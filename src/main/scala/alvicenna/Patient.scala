@@ -29,6 +29,48 @@ class Patient {
 
   //class methods section
 
+  //Delete patient
+  def delete(): Unit={
+    read()
+    var rowId = ""
+    if(dataMap != null) {
+      var isValidId = false
+      do{
+        println("Give the Id of the patient to delete. (Type cancel to exit)")
+        print("> ")
+        rowId = readLine().trim()
+        if(rowId.forall(_.isDigit) != true || dataMap.isDefinedAt(rowId.toInt) != true)
+          {if(rowId.toLowerCase() != "cancel"){println()
+            println("Invalid Entry")
+            println()
+          } else {
+            isValidId = true
+          }
+          }else {
+            isValidId = true
+        }
+      }while(!isValidId)
+      if(rowId.toLowerCase() != "cancel"){
+        try{
+          query = ("DELETE FROM " + className + " WHERE "+ className +"Id = "+ rowId.toInt )
+          executeQuery = new ExecuteQuery(query, false)
+          println(s"$className ${dataMap(rowId.toInt)._1} ${dataMap(rowId.toInt)._2} deleted")
+        }catch {
+          case e: Throwable => e.printStackTrace
+            println(s"Error deleting $className")
+        }finally {
+          if(executeQuery.connection != null)executeQuery.connection.close()
+        }
+    }
+    }else{
+      println()
+      println(s"Table $className is empty")
+    }
+    //end delete
+  }
+
+
+
   //read JSON file
   def readJSON(): Unit={
 
@@ -50,8 +92,7 @@ class Patient {
     }
 
     if(Files.exists(Paths.get(path))){
-//        var tag = Array("patients", "patient")
-//        var elements = 5
+
         var jasonreader = new JSONReader(path, tag, elements)
 
       // create query
@@ -91,7 +132,7 @@ class Patient {
   }
 
 
-  //create patient
+  //create
   def create(): Unit={
 
     try{
@@ -114,16 +155,17 @@ class Patient {
       query = (s"INSERT INTO patient (firstName, lastName, birthDate, gender, patientEmail, userId)" +
         s""" VALUES("$firstName", "$lastName", $birthDate, "$gender", "$patientEmail", ${Main.defaultUser})""")
       executeQuery = new ExecuteQuery(query, false)
-      println(s"Patient $firstName $lastName created")
+      println(s"$className created")
     }catch {
       case e: Throwable => e.printStackTrace
-      println("Error Creating Patient")
+      println(s"Error Creating $className")
     }finally {
       if(executeQuery.connection != null)executeQuery.connection.close()
     }
-    //end create patient
+    //end create
   }
 
+  // Read
   def read(p_tableId: Int = 0): Unit={
 
     try{
@@ -158,11 +200,12 @@ class Patient {
         System.out.print(", Gender: " + gender)
         System.out.println(", Email: " + patientEmail)
       }
-
+      println()
       if(p_tableId != 0 && objectMap.size == 0){
-        println("There is no Patient with Id = "+p_tableId)
+
+        println(s"There is no $className with Id = "+p_tableId)
       } else if(p_tableId == 0 && objectMap.size == 0){
-        println("Table patient is empty. Create a patient before proceed")
+        println(s"Table $className is empty. Create a $className before proceed")
       } else {
         dataMap = objectMap.toMap
       }
@@ -174,7 +217,7 @@ class Patient {
     }finally {
       if(executeQuery.connection != null)executeQuery.connection.close()
     }
-    //end readAll patients
+    //end read()
   }
 
   //private function section

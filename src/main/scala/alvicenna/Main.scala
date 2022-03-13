@@ -14,11 +14,15 @@ object Main extends App {
     var activity = ""
     var option = ""
     var exit = false
+    var message = ""
 
     // main screen manager
     topScreen()
     do{
+        message = ""
         mainScreen()
+        topScreen()
+        println(s"${RESET}${RED}$message${RESET}")
     }
     while (!exit)
 
@@ -38,10 +42,7 @@ object Main extends App {
                 println("Exit APP")
                 exit = true
             }
-            case other => {
-                topScreen()
-                println(s"${RESET}${RED}Wrong option!${RESET}")
-            }
+            case other => message = "Wrong option!"
             // end match
         }
         //end main screen
@@ -61,7 +62,8 @@ object Main extends App {
             println(s"${RESET}${BLUE}1 -> Create Patient${RESET}")
             println(s"${RESET}${BLUE}2 -> List all Patients${RESET}")
             println(s"${RESET}${BLUE}3 -> Read JSON file${RESET}")
-            println(s"${RESET}${BLUE}4 -> Return to Main Screen${RESET}")
+            println(s"${RESET}${BLUE}4 -> Delete Patient${RESET}")
+            println(s"${RESET}${BLUE}5 -> Return to Main Screen${RESET}")
             println(s"${RESET}${BLUE}0 -> Exit APP${RESET}")
             print(s"> ")
             localOption = readLine().trim()
@@ -69,7 +71,8 @@ object Main extends App {
                 case "1" => patient.create()
                 case "2" => patient.read()
                 case "3" => patient.readJSON()
-                case "4" => localExit = true
+                case "4" => patient.delete()
+                case "5" => localExit = true
                 case "0" => { localExit = true
                     exit = true}
                 case other => println(s"${RESET}${RED}Wrong option!${RESET}")
