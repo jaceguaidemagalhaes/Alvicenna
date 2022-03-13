@@ -29,6 +29,40 @@ class Patient {
 
   //class methods section
 
+  //selectDefaultPatient
+  def selectDefaultPatient(): Unit={
+    Main.defaultPatient = 0
+    read()
+    var rowId = ""
+    if(dataMap != null) {
+      var isValidId = false
+      do{
+        println(s"Select the $className ID. (Type cancel to exit)")
+        print("> ")
+        rowId = readLine().trim()
+        if(rowId.forall(_.isDigit) != true || dataMap.isDefinedAt(rowId.toInt) != true)
+        {if(rowId.toLowerCase() != "cancel"){println()
+          println("Invalid Entry")
+          println()
+        } else {
+          isValidId = true
+        }
+        }else {
+          isValidId = true
+        }
+      }while(!isValidId)
+      if(rowId.toLowerCase() != "cancel"){
+        read(rowId.toInt)
+        Main.defaultPatient = rowId.toInt
+        Main.defautlPatientMap = dataMap
+      }
+    }else{
+      println()
+      println(s"Table $className is empty")
+    }
+    //end selectDefaultPatient
+  }
+
   //Delete patient
   def delete(): Unit={
     read()
@@ -36,7 +70,7 @@ class Patient {
     if(dataMap != null) {
       var isValidId = false
       do{
-        println("Give the Id of the patient to delete. (Type cancel to exit)")
+        println(s"Give the Id of the $className to delete. (Type cancel to exit)")
         print("> ")
         rowId = readLine().trim()
         if(rowId.forall(_.isDigit) != true || dataMap.isDefinedAt(rowId.toInt) != true)
@@ -206,7 +240,10 @@ class Patient {
         println(s"There is no $className with Id = "+p_tableId)
       } else if(p_tableId == 0 && objectMap.size == 0){
         println(s"Table $className is empty. Create a $className before proceed")
-      } else {
+      } else if(p_tableId != 0 && objectMap.size == 1){
+        dataMap = objectMap.toMap
+      }
+      else {
         dataMap = objectMap.toMap
       }
 
