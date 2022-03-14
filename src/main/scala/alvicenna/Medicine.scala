@@ -31,7 +31,8 @@ class Medicine {
 
   //class methods section
 
-  //Delete patient
+
+  //Delete medicine
   def delete(): Unit={
     read()
     var rowId = ""
@@ -190,11 +191,14 @@ class Medicine {
         objectMap += (medicineId -> (medicineName,typeOfMedicine,remarks))
 
         //Display values
-        println()
-        System.out.print("Medicine ID: " + medicineId)
-        System.out.print(" : " + medicineName)
-        System.out.println(" : " + typeOfMedicine)
-        System.out.println("Remarks: " + remarks)
+        if(p_tableId == 0){
+          println()
+          System.out.print("Medicine ID: " + medicineId)
+          System.out.print(" : " + medicineName)
+          System.out.println(" : " + typeOfMedicine)
+          System.out.println("Remarks: " + remarks)
+        }
+
       }
       println()
       if(p_tableId != 0 && objectMap.size == 0){

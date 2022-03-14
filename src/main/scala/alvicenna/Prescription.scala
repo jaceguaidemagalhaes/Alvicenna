@@ -1,41 +1,71 @@
 package alvicenna
 
-import scala.io.StdIn.readLine
 import java.nio.file.{Files, Paths}
-import scala.Console.{BLINK, RED_B, RESET}
+import scala.io.StdIn.readLine
 
-class HealthData {
+class Prescription {
   //class configuration
   def className = this.getClass.getSimpleName
   println("class: "+ className)
-  var tag = Array("healthdata", className.toLowerCase())
-  var elements = 7
+  var tag = Array("prescriptions", className.toLowerCase())
+  var elements = 2
 
 
   //class properties section
-  var healthDataId:Int = 0
+  var prescriptionId:Int = 0
 
-  var temperature: Float = 0
-  var pulse: Int = 0
-  var readingTime:String = ""
-  var observations:String = ""
-  var systolic: Int = 0
-  var diastolic: Int = 0
-  var oxygenLevel : Float = 0
+  var doctor: String = ""
+  var prescriptionDate: String = ""
+  var active: Boolean = true
+  var dateLastFilling: String = ""
+  var quantityLastFilling: Int = 0
 
   //map
-  var dataMap:Map[Int,(Float, Int, String ,String,Int,Int,Float)] = null
+  var dataMap:Map[Int,(String, String, Boolean ,String,Int)] = null
 
   //private variables section
   var query = ""
   var executeQuery:ExecuteQuery = null
   var path = ""
   var rowValue = ""
-  var DMLValues = "temperature, pulse, readingtime, observations, systolic, diastolic, oxygenlevel, patientId"
+  var DMLValues = "doctor, prescriptionDate, active, dateLastFilling, quantityLastFilling, patientId"
 
 
 
   //class methods section
+
+  def selectDefaultPrescription(): Unit={
+    Main.defaultPrescription = 0
+    read()
+    var rowId = ""
+    if(dataMap != null) {
+      var isValidId = false
+      do{
+        println(s"Select the $className ID. (Type cancel to exit)")
+        print("> ")
+        rowId = readLine().trim()
+        if(rowId.forall(_.isDigit) != true || dataMap.isDefinedAt(rowId.toInt) != true)
+        {if(rowId.toLowerCase() != "cancel"){println()
+          println("Invalid Entry")
+          println()
+        } else {
+          isValidId = true
+        }
+        }else {
+          isValidId = true
+        }
+      }while(!isValidId)
+      if(rowId.toLowerCase() != "cancel"){
+        read(rowId.toInt)
+        Main.defaultPrescription = rowId.toInt
+        Main.defaultPrescriptionMap = dataMap
+      }
+    }else{
+      println()
+      println(s"Table $className is empty")
+    }
+    //end selectDefaultPrescription
+  }
 
   //Delete patient
   def delete(): Unit={
@@ -90,8 +120,7 @@ class HealthData {
     }
 
     if(defaultPath == "Y"){
-      path = System.getProperty("user.dir")+"/JSONFiles/"+className.toLowerCase()+".json"
-      println(path)
+      path = System.getProperty("user.dir")+"/JSONFiles/+"+className.toLowerCase()+".json"
     } else if(defaultPath == "N"){
       while(path.toLowerCase().contains(className.toLowerCase()+".json") != true && path.toLowerCase() != "cancel"){
         println("Give de location of file \""+className.toLowerCase()+".json\". (Type cancel to exit)")
@@ -105,20 +134,15 @@ class HealthData {
       var jasonreader = new JSONReader(path, tag, elements)
 
       // create query
-      query = ("INSERT INTO " + className + " (" + DMLValues +
+      query = ("INSERT INTO " + className + " (" + "doctor, prescriptionDate, patientId" +
         ") Values ")
       for(i <- 0 to jasonreader.JSONData.length - 1){
         var partialQuery = query
         var rowValue = ""
 
         rowValue += "(" +
-          jasonreader.JSONData(i)(0) +
-          "," + jasonreader.JSONData(i)(1) +
-          "," + reverseDate(jasonreader.JSONData(i)(2)) +
-          ",\"" + jasonreader.JSONData(i)(3) + "\"" +
-          "," + jasonreader.JSONData(i)(4) +
-          "," + jasonreader.JSONData(i)(5) +
-          "," + jasonreader.JSONData(i)(6) +
+          "\"" + jasonreader.JSONData(i)(0) + "\"" +
+          ",\"" + jasonreader.JSONData(i)(1) + "\"" +
           ", " + Main.defaultPatient + ")"
 
         partialQuery += rowValue
@@ -147,33 +171,19 @@ class HealthData {
   def create(): Unit={
 
     try{
-      println(s"Insert Values. All fields are ${RESET}${RED_B}${BLINK}mandatory${RESET}.")
-      println("Temperature?")
+      println(s"Insert Values.")
+      println("Doctor?")
       print("> ")
-      temperature = readLine().trim().toFloat
-      println("Pulse?")
+      doctor = readLine().trim()
+      println("Prescription date? (MM/dd/yyyy)")
       print("> ")
-      pulse = readLine().trim().toInt
-      println("Date of reading? format(MM/dd/yyyy")
-      print("> ")
-      readingTime = readLine().trim()
-      println("Systolic value? (pressure reading first value)")
-      print("> ")
-      systolic = readLine().trim().toInt
-      println("Diastolic value? (pressure reading second value)")
-      print("> ")
-      diastolic = readLine().trim().toInt
-      println("Oxygen level?")
-      print("> ")
-      oxygenLevel = readLine().trim().toFloat
-      println("Observations?")
-      print("> ")
-      observations = readLine().trim()
+      prescriptionDate = readLine().trim()
 
-      readingTime = reverseDate(readingTime)
+      prescriptionDate = reverseDate(prescriptionDate)
+      dateLastFilling = reverseDate(dateLastFilling)
 
-      query = (s"INSERT INTO "+ className + " ("+ DMLValues +
-        s""") VALUES("$temperature", "$pulse", $readingTime, "$observations", "$systolic", "$diastolic", "$oxygenLevel", ${Main.defaultPatient})""")
+      query = (s"INSERT INTO "+ className + " ("+ "doctor, prescriptionDate, patientId" +
+        s""") VALUES("$doctor", $prescriptionDate, ${Main.defaultPatient})""")
       executeQuery = new ExecuteQuery(query, false)
 
       println(s"$className created")
@@ -193,38 +203,36 @@ class HealthData {
       if(p_tableId == 0){
         query = "SELECT * FROM "+className+" where patientId = "+Main.defaultPatient
       } else{
-        query = "SELECT * FROM "+className+" where patientId = "+Main.defaultPatient+ " and "+className+"Id = "+p_tableId
+        query = "SELECT * FROM "+className+" where prescriptionId = "+p_tableId
       }
       executeQuery = new ExecuteQuery(query, true)
 
-      var objectMap:scala.collection.mutable.Map[Int,(Float, Int, String ,String,Int,Int,Float)]
-      = scala.collection.mutable.Map(0 -> (0, 0, null ,null,0,0,0))
-      objectMap -= 0
+      var objectMap:scala.collection.mutable.Map[Int,(String, String, Boolean ,String,Int)]
+      = scala.collection.mutable.Map()
+
       try while ( {
         executeQuery.resultSet.next
       }) {
         //load map with values
-        healthDataId = executeQuery.resultSet.getInt("healthDataId")
-        temperature = executeQuery.resultSet.getFloat("temperature")
-        pulse = executeQuery.resultSet.getInt("pulse")
-        readingTime = executeQuery.resultSet.getString("readingTime")
-        observations = executeQuery.resultSet.getString("observations")
-        systolic = executeQuery.resultSet.getInt("systolic")
-        diastolic = executeQuery.resultSet.getInt("diastolic")
-        oxygenLevel = executeQuery.resultSet.getFloat("oxygenLevel")
+        prescriptionId = executeQuery.resultSet.getInt("prescriptionId")
+        doctor = executeQuery.resultSet.getString("doctor")
+        prescriptionDate = executeQuery.resultSet.getString("prescriptionDate")
+        active = executeQuery.resultSet.getBoolean("active")
+        dateLastFilling = executeQuery.resultSet.getString("dateLastFilling")
+        quantityLastFilling = executeQuery.resultSet.getInt("quantityLastFilling")
 
-        objectMap += (healthDataId -> (temperature,pulse,readingTime,observations,systolic,diastolic,oxygenLevel))
+        objectMap += (prescriptionId -> (doctor,prescriptionDate,active,dateLastFilling,quantityLastFilling))
 
         //Display values
         println()
-        System.out.println("Health Data ID: " + healthDataId)
-        System.out.println("Reading Date: " + readingTime.subSequence(0,10))
-        System.out.print("Temperature: " + temperature)
-        System.out.println(", Pulse: " + pulse)
-        System.out.print("Blood Pressure: " + systolic)
-        System.out.print(" x " + diastolic)
-        System.out.println(" Oxygen Level: " + oxygenLevel)
-        System.out.print("Observations: " + observations)
+        System.out.println("Prescription ID: " + prescriptionId)
+        System.out.print("Doctor: " + doctor)
+        System.out.print(" Prescription Date: " + prescriptionDate)
+
+        //future implementations
+//        System.out.println(", active: " + active)
+//        System.out.println(" date Last Filling " + dateLastFilling)
+//        System.out.println("quantityLastFilling: " + obserquantityLastFillingvations)
         println()
       }
       println()
@@ -268,5 +276,5 @@ class HealthData {
   }
 
 
-  //end HealthData
+  //end prescription
 }

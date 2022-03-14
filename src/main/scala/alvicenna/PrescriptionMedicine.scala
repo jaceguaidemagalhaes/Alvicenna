@@ -2,42 +2,36 @@ package alvicenna
 
 import scala.io.StdIn.readLine
 import java.nio.file.{Files, Paths}
-import scala.Console.{BLINK, RED_B, RESET}
 
-class HealthData {
+class PrescriptionMedicine {
   //class configuration
   def className = this.getClass.getSimpleName
   println("class: "+ className)
-  var tag = Array("healthdata", className.toLowerCase())
-  var elements = 7
+  var tag = Array("patients", className.toLowerCase())
+  var elements = 3
+
 
 
   //class properties section
-  var healthDataId:Int = 0
+  var prescriptionMedicineId:Int = 0
+  var prescriptionId:Int = 0
+  var medicineId:Int = 0
+  var instructions:String = ""
 
-  var temperature: Float = 0
-  var pulse: Int = 0
-  var readingTime:String = ""
-  var observations:String = ""
-  var systolic: Int = 0
-  var diastolic: Int = 0
-  var oxygenLevel : Float = 0
-
-  //map
-  var dataMap:Map[Int,(Float, Int, String ,String,Int,Int,Float)] = null
-
+  var dataMap:Map[Int,(Int,Int,String)] = null
   //private variables section
   var query = ""
   var executeQuery:ExecuteQuery = null
   var path = ""
   var rowValue = ""
-  var DMLValues = "temperature, pulse, readingtime, observations, systolic, diastolic, oxygenlevel, patientId"
 
 
 
   //class methods section
 
-  //Delete patient
+
+
+  //Delete prescriptionPatient
   def delete(): Unit={
     read()
     var rowId = ""
@@ -90,8 +84,7 @@ class HealthData {
     }
 
     if(defaultPath == "Y"){
-      path = System.getProperty("user.dir")+"/JSONFiles/"+className.toLowerCase()+".json"
-      println(path)
+      path = System.getProperty("user.dir")+"/JSONFiles/+"+className.toLowerCase()+".json"
     } else if(defaultPath == "N"){
       while(path.toLowerCase().contains(className.toLowerCase()+".json") != true && path.toLowerCase() != "cancel"){
         println("Give de location of file \""+className.toLowerCase()+".json\". (Type cancel to exit)")
@@ -105,21 +98,16 @@ class HealthData {
       var jasonreader = new JSONReader(path, tag, elements)
 
       // create query
-      query = ("INSERT INTO " + className + " (" + DMLValues +
-        ") Values ")
+      query = ("INSERT INTO patient (firstName, lastName, birthDate, gender, patientEmail, userId)" +
+        " Values ")
       for(i <- 0 to jasonreader.JSONData.length - 1){
         var partialQuery = query
         var rowValue = ""
 
-        rowValue += "(" +
-          jasonreader.JSONData(i)(0) +
-          "," + jasonreader.JSONData(i)(1) +
-          "," + reverseDate(jasonreader.JSONData(i)(2)) +
-          ",\"" + jasonreader.JSONData(i)(3) + "\"" +
-          "," + jasonreader.JSONData(i)(4) +
-          "," + jasonreader.JSONData(i)(5) +
-          "," + jasonreader.JSONData(i)(6) +
-          ", " + Main.defaultPatient + ")"
+        rowValue += "(" + Main.defaultPrescription +
+        ",\"" + jasonreader.JSONData(i)(0) + "\"" +
+          ",\"" + jasonreader.JSONData(i)(1) + "\""+ ")"
+
 
         partialQuery += rowValue
         println(partialQuery)
@@ -128,7 +116,7 @@ class HealthData {
           executeQuery = new ExecuteQuery(partialQuery, false)
         }catch {
           case e: Throwable => e.printStackTrace
-            println(s"Error Creating $className ${jasonreader.JSONData(i)(0)} ${jasonreader.JSONData(i)(1)}")
+            println(s"Error Creating Patient ${jasonreader.JSONData(i)(0)} ${jasonreader.JSONData(i)(1)}")
         }finally {
           if(executeQuery.connection != null)executeQuery.connection.close()
         }
@@ -145,37 +133,23 @@ class HealthData {
 
   //create
   def create(): Unit={
+    val medicine = new Medicine()
 
     try{
-      println(s"Insert Values. All fields are ${RESET}${RED_B}${BLINK}mandatory${RESET}.")
-      println("Temperature?")
-      print("> ")
-      temperature = readLine().trim().toFloat
-      println("Pulse?")
-      print("> ")
-      pulse = readLine().trim().toInt
-      println("Date of reading? format(MM/dd/yyyy")
-      print("> ")
-      readingTime = readLine().trim()
-      println("Systolic value? (pressure reading first value)")
-      print("> ")
-      systolic = readLine().trim().toInt
-      println("Diastolic value? (pressure reading second value)")
-      print("> ")
-      diastolic = readLine().trim().toInt
-      println("Oxygen level?")
-      print("> ")
-      oxygenLevel = readLine().trim().toFloat
-      println("Observations?")
-      print("> ")
-      observations = readLine().trim()
+      println("Do you want to search medicine table? (Y or N)")
+      val s = readLine().trim().asInstanceOf[String]
+      if(s.toLowerCase() == "y") medicine.read()
 
-      readingTime = reverseDate(readingTime)
+      println("Medicine Id?")
+      print("> ")
+      medicineId = readLine().trim().toInt
+      println("Instructions?")
+      print("> ")
+      instructions = readLine().trim()
 
-      query = (s"INSERT INTO "+ className + " ("+ DMLValues +
-        s""") VALUES("$temperature", "$pulse", $readingTime, "$observations", "$systolic", "$diastolic", "$oxygenLevel", ${Main.defaultPatient})""")
+      query = (s"INSERT INTO prescriptionMedicine (prescriptionId, medicineId, instructions)" +
+        s""" VALUES(${Main.defaultPrescription}, $medicineId, "$instructions")""")
       executeQuery = new ExecuteQuery(query, false)
-
       println(s"$className created")
     }catch {
       case e: Throwable => e.printStackTrace
@@ -191,49 +165,42 @@ class HealthData {
 
     try{
       if(p_tableId == 0){
-        query = "SELECT * FROM "+className+" where patientId = "+Main.defaultPatient
+        query = "SELECT * FROM "+className+" where prescriptionId = "+Main.defaultPrescription
       } else{
-        query = "SELECT * FROM "+className+" where patientId = "+Main.defaultPatient+ " and "+className+"Id = "+p_tableId
+        query = "SELECT * FROM "+className+" where userId = "+Main.defaultPrescription+ " and "+className+"Id = "+p_tableId
       }
       executeQuery = new ExecuteQuery(query, true)
 
-      var objectMap:scala.collection.mutable.Map[Int,(Float, Int, String ,String,Int,Int,Float)]
-      = scala.collection.mutable.Map(0 -> (0, 0, null ,null,0,0,0))
-      objectMap -= 0
+      var objectMap:scala.collection.mutable.Map[Int,(Int,Int,String)]
+      = scala.collection.mutable.Map()
+
+      val medicine = new Medicine()
+
+
       try while ( {
         executeQuery.resultSet.next
       }) {
         //load map with values
-        healthDataId = executeQuery.resultSet.getInt("healthDataId")
-        temperature = executeQuery.resultSet.getFloat("temperature")
-        pulse = executeQuery.resultSet.getInt("pulse")
-        readingTime = executeQuery.resultSet.getString("readingTime")
-        observations = executeQuery.resultSet.getString("observations")
-        systolic = executeQuery.resultSet.getInt("systolic")
-        diastolic = executeQuery.resultSet.getInt("diastolic")
-        oxygenLevel = executeQuery.resultSet.getFloat("oxygenLevel")
+        prescriptionMedicineId = executeQuery.resultSet.getInt("prescriptionMedicineId")
+        prescriptionId = executeQuery.resultSet.getInt("prescriptionId")
+        medicineId = executeQuery.resultSet.getInt("medicineId")
+        instructions = executeQuery.resultSet.getString("instructions")
 
-        objectMap += (healthDataId -> (temperature,pulse,readingTime,observations,systolic,diastolic,oxygenLevel))
-
-        //Display values
-        println()
-        System.out.println("Health Data ID: " + healthDataId)
-        System.out.println("Reading Date: " + readingTime.subSequence(0,10))
-        System.out.print("Temperature: " + temperature)
-        System.out.println(", Pulse: " + pulse)
-        System.out.print("Blood Pressure: " + systolic)
-        System.out.print(" x " + diastolic)
-        System.out.println(" Oxygen Level: " + oxygenLevel)
-        System.out.print("Observations: " + observations)
-        println()
+        objectMap += (prescriptionMedicineId -> (prescriptionId,medicineId,instructions))
+        medicine.read(medicineId)
+        println("ID: " + prescriptionMedicineId)
+        println("Medicine: " + medicine.dataMap(medicineId)._1)
+        println("Doctors Instructions: " + instructions)
       }
-      println()
       if(p_tableId != 0 && objectMap.size == 0){
 
         println(s"There is no $className with Id = "+p_tableId)
       } else if(p_tableId == 0 && objectMap.size == 0){
         println(s"Table $className is empty. Create a $className before proceed")
-      } else {
+      } else if(p_tableId != 0 && objectMap.size == 1){
+        dataMap = objectMap.toMap
+      }
+      else {
         dataMap = objectMap.toMap
       }
 
@@ -268,5 +235,5 @@ class HealthData {
   }
 
 
-  //end HealthData
+  //end PrescriptionMedicine
 }

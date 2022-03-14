@@ -14,8 +14,8 @@ class ExecuteQuery(query: String = "", isSelect: Boolean = true) {
       var connection:Connection = null
       var resultSet:ResultSet = null
 
-      val startQ = System.currentTimeMillis
-      println("Executing query...")
+      //val startQ = System.currentTimeMillis
+      //println("Executing query...")
 
       try {
         // make the connection
@@ -30,13 +30,11 @@ class ExecuteQuery(query: String = "", isSelect: Boolean = true) {
         }else{
           statement.executeUpdate(query)
         }
-        val durationQ = (System.currentTimeMillis - startQ)
-        println(s"Query executed. Execution time = $durationQ ms")
+        //val durationQ = (System.currentTimeMillis - startQ)
+        //println(s"Query executed. Execution time = $durationQ ms")
       } catch {
         case e: Throwable => e.printStackTrace
         println("Error Executing Query")
-      } finally {
-        //if(connection != null)connection.close()
       }
 //end Execute Query
 }
