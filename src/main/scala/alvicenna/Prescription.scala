@@ -112,6 +112,7 @@ class Prescription {
   //read JSON file
   def readJSON(): Unit={
 
+    create()
     var defaultPath = ""
     while(defaultPath != "Y" && defaultPath != "N" && defaultPath != "CANCEL"){
       println("Read JSON file from default directory? (Choose y,  n, or cancel)")
@@ -120,9 +121,9 @@ class Prescription {
     }
 
     if(defaultPath == "Y"){
-      path = System.getProperty("user.dir")+"/JSONFiles/+"+className.toLowerCase()+".json"
+      path = System.getProperty("user.dir")+"/JSONFiles/prescription.json"
     } else if(defaultPath == "N"){
-      while(path.toLowerCase().contains(className.toLowerCase()+".json") != true && path.toLowerCase() != "cancel"){
+      while(path.toLowerCase().contains("prescription.json") != true && path.toLowerCase() != "cancel"){
         println("Give de location of file \""+className.toLowerCase()+".json\". (Type cancel to exit)")
         print("> ")
         path = readLine().trim()
@@ -134,21 +135,22 @@ class Prescription {
       var jasonreader = new JSONReader(path, tag, elements)
 
       // create query
-      query = ("INSERT INTO " + className + " (" + "doctor, prescriptionDate, patientId" +
-        ") Values ")
+      query = ("INSERT INTO prescriptionDrug (prescriptionId, drugId, instructions) Values ")
+      println(query)
       for(i <- 0 to jasonreader.JSONData.length - 1){
         var partialQuery = query
         var rowValue = ""
 
-        rowValue += "(" +
-          "\"" + jasonreader.JSONData(i)(0) + "\"" +
-          ",\"" + jasonreader.JSONData(i)(1) + "\"" +
-          ", " + Main.defaultPatient + ")"
+        rowValue += "(" + Main.defaultPrescription +
+          "," + jasonreader.JSONData(i)(0) +
+          ",\"" + jasonreader.JSONData(i)(1) + "\")"
+
 
         partialQuery += rowValue
         println(partialQuery)
 
         try{
+          println(partialQuery)
           executeQuery = new ExecuteQuery(partialQuery, false)
         }catch {
           case e: Throwable => e.printStackTrace
@@ -171,8 +173,8 @@ class Prescription {
   def create(): Unit={
 
     try{
-      println(s"Insert Values.")
-      println("Doctor?")
+      println(s"Prescription Data.")
+      println("Doctor's name?")
       print("> ")
       doctor = readLine().trim()
       println("Prescription date? (MM/dd/yyyy)")
@@ -180,7 +182,7 @@ class Prescription {
       prescriptionDate = readLine().trim()
 
       prescriptionDate = reverseDate(prescriptionDate)
-      dateLastFilling = reverseDate(dateLastFilling)
+      //dateLastFilling = reverseDate(dateLastFilling)
 
       query = (s"INSERT INTO "+ className + " ("+ "doctor, prescriptionDate, patientId" +
         s""") VALUES("$doctor", $prescriptionDate, ${Main.defaultPatient})""")
@@ -193,7 +195,35 @@ class Prescription {
     }finally {
       if(executeQuery.connection != null)executeQuery.connection.close()
     }
+    selectNewPrescriptionId()
     //end create
+  }
+
+  def selectNewPrescriptionId(): Unit= {
+
+    try{
+      query = ("select distinct prescriptionid from prescription where doctor = \""
+        + doctor + "\" and prescriptiondate = " + prescriptionDate)
+      executeQuery = new ExecuteQuery(query, true)
+
+      while ( {
+        executeQuery.resultSet.next
+      }) {
+        //load map with values
+        prescriptionId = executeQuery.resultSet.getInt("prescriptionId")
+
+
+        //Display values
+        Main.defaultPrescription = prescriptionId
+        System.out.println("New prescription ID: " + prescriptionId)
+      }
+    }catch {
+      case e: Throwable => e.printStackTrace
+        println("Error Reading All Patients")
+    }finally {
+      if(executeQuery.connection != null)executeQuery.connection.close()
+    }
+    //end selectnewid()
   }
 
   // Read
@@ -210,7 +240,7 @@ class Prescription {
       var objectMap:scala.collection.mutable.Map[Int,(String, String, Boolean ,String,Int)]
       = scala.collection.mutable.Map()
 
-      try while ( {
+      while ( {
         executeQuery.resultSet.next
       }) {
         //load map with values
@@ -224,7 +254,6 @@ class Prescription {
         objectMap += (prescriptionId -> (doctor,prescriptionDate,active,dateLastFilling,quantityLastFilling))
 
         //Display values
-        println()
         System.out.println("Prescription ID: " + prescriptionId)
         System.out.print("Doctor: " + doctor)
         System.out.print(" Prescription Date: " + prescriptionDate)

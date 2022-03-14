@@ -1,0 +1,29 @@
+[0m[[0m[0mdebug[0m] [0m[0mPackaging /Users/jay85mag/Library/CloudStorage/OneDrive-Personal/00Revature/projects/PHM_CLI/target/scala-2.12/alvicenna_2.12-0.1.0-SNAPSHOT.jar ...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInput file mappings:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	alvicenna[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/jay85mag/Library/CloudStorage/OneDrive-Personal/00Revature/projects/PHM_CLI/target/scala-2.12/classes/alvicenna[0m
+[0m[[0m[0mdebug[0m] [0m[0m	alvicenna/Main$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/jay85mag/Library/CloudStorage/OneDrive-Personal/00Revature/projects/PHM_CLI/target/scala-2.12/classes/alvicenna/Main$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	alvicenna/JSONReader.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/jay85mag/Library/CloudStorage/OneDrive-Personal/00Revature/projects/PHM_CLI/target/scala-2.12/classes/alvicenna/JSONReader.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	alvicenna/Drug.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/jay85mag/Library/CloudStorage/OneDrive-Personal/00Revature/projects/PHM_CLI/target/scala-2.12/classes/alvicenna/Drug.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	alvicenna/HelloWord.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/jay85mag/Library/CloudStorage/OneDrive-Personal/00Revature/projects/PHM_CLI/target/scala-2.12/classes/alvicenna/HelloWord.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	alvicenna/Patient.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/jay85mag/Library/CloudStorage/OneDrive-Personal/00Revature/projects/PHM_CLI/target/scala-2.12/classes/alvicenna/Patient.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	alvicenna/Prescription.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/jay85mag/Library/CloudStorage/OneDrive-Personal/00Revature/projects/PHM_CLI/target/scala-2.12/classes/alvicenna/Prescription.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	alvicenna/Main.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/jay85mag/Library/CloudStorage/OneDrive-Personal/00Revature/projects/PHM_CLI/target/scala-2.12/classes/alvicenna/Main.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	alvicenna/ExecuteQuery.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/jay85mag/Library/CloudStorage/OneDrive-Personal/00Revature/projects/PHM_CLI/target/scala-2.12/classes/alvicenna/ExecuteQuery.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	alvicenna/Main$delayedInit$body.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/jay85mag/Library/CloudStorage/OneDrive-Personal/00Revature/projects/PHM_CLI/target/scala-2.12/classes/alvicenna/Main$delayedInit$body.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	alvicenna/HealthData.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/jay85mag/Library/CloudStorage/OneDrive-Personal/00Revature/projects/PHM_CLI/target/scala-2.12/classes/alvicenna/HealthData.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	alvicenna/ExecuteQuery$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/jay85mag/Library/CloudStorage/OneDrive-Personal/00Revature/projects/PHM_CLI/target/scala-2.12/classes/alvicenna/ExecuteQuery$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	alvicenna/PrescriptionDrug.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/jay85mag/Library/CloudStorage/OneDrive-Personal/00Revature/projects/PHM_CLI/target/scala-2.12/classes/alvicenna/PrescriptionDrug.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mDone packaging.[0m

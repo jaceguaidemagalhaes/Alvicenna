@@ -35,18 +35,18 @@ object Main extends App {
         println()
         println(s"${RESET}${BLUE}${BOLD}Select your option: (Type your option number)${RESET}")
         println()
-        println(s"${RESET}${BLUE}1 -> Patient${RESET}")
-        println(s"${RESET}${BLUE}2 -> Health Data${RESET}")
-        println(s"${RESET}${BLUE}3 -> Medicine${RESET}")
-        println(s"${RESET}${BLUE}4 -> Prescription${RESET}")
+        println(s"${RESET}${BLUE}1 -> Health Data${RESET}")
+        println(s"${RESET}${BLUE}2 -> Prescriptions${RESET}")
+        println(s"${RESET}${BLUE}3 -> Patients${RESET}")
+        println(s"${RESET}${BLUE}4 -> Drugs${RESET}")
         println(s"${RESET}${BLUE}0 -> Exit APP${RESET}")
         print(s"> ")
         option = readLine().trim()
         option match {
-            case "1" => patientScreen()
-            case "2" => selectPatientScreen("healthDataScreen")
-            case "3" => medicineScreen()
-            case "4" => selectPatientScreen("prescriptionScreen")
+            case "3" => patientScreen()
+            case "1" => selectPatientScreen("healthDataScreen")
+            case "4" => drugScreen()
+            case "2" => selectPatientScreen("prescriptionScreen")
             case "0" => {
                 println("Exit APP")
                 exit = true
@@ -64,14 +64,14 @@ object Main extends App {
         println()
         var prescription = new Prescription()
         prescription.selectDefaultPrescription()
-        if(defaultPrescription != 0) prescriptionMedicineScreen()
+        if(defaultPrescription != 0) prescriptionDrugScreen()
 
         //end selectDefaultPrescription
     }
 
-    def prescriptionMedicineScreen(): Unit ={
-        var prescriptionMedicine = new PrescriptionMedicine()
-        prescriptionMedicine.read()
+    def prescriptionDrugScreen(): Unit ={
+        var prescriptionDrug = new PrescriptionDrug()
+        prescriptionDrug.read()
         var localOption = ""
         var localExit = false
         topScreen()
@@ -83,17 +83,17 @@ object Main extends App {
             println()
             println(s"${RESET}${BLUE}${BOLD}Select your option: (Type your option number)${RESET}")
             println()
-            println(s"${RESET}${BLUE}1 -> Insert new Medicine${RESET}")
-            println(s"${RESET}${BLUE}2 -> List Medicines${RESET}")
-            println(s"${RESET}${BLUE}3 -> Delete Medicine${RESET}")
-            println(s"${RESET}${BLUE}4 -> Return to Main Screen${RESET}")
+            println(s"${RESET}${BLUE}1 -> Insert new Drug${RESET}")
+            println(s"${RESET}${BLUE}2 -> List Drugs${RESET}")
+            println(s"${RESET}${BLUE}3 -> Delete Drug${RESET}")
+            println(s"${RESET}${BLUE}4 -> Return to Previous Screen${RESET}")
             println(s"${RESET}${BLUE}0 -> Exit APP${RESET}")
             print(s"> ")
             localOption = readLine().trim()
             localOption match {
-                case "1" => prescriptionMedicine.create()
-                case "2" => prescriptionMedicine.read()
-                case "3" => prescriptionMedicine.delete()
+                case "1" => prescriptionDrug.create()
+                case "2" => prescriptionDrug.read()
+                case "3" => prescriptionDrug.delete()
                 case "4" => localExit = true
                 case "0" => { localExit = true
                     exit = true}
@@ -112,6 +112,7 @@ object Main extends App {
         var localExit = false
         topScreen()
         do {
+
             println()
             println(s"               ${RESET}${GREEN_B}${BOLD}Prescription Screen${RESET}")
             println()
@@ -121,16 +122,16 @@ object Main extends App {
             println()
             println(s"${RESET}${BLUE}1 -> Insert new Prescription${RESET}")
             println(s"${RESET}${BLUE}2 -> Manage Prescription${RESET}")
-            println(s"${RESET}${BLUE}3 -> Read JSON file${RESET}")
+            println(s"${RESET}${BLUE}3 -> Read prescription from prescription.json file${RESET}")
             println(s"${RESET}${BLUE}4 -> Delete Prescription${RESET}")
-            println(s"${RESET}${BLUE}5 -> Return to Main Screen${RESET}")
+            println(s"${RESET}${BLUE}5 -> Return to previous screen${RESET}")
             println(s"${RESET}${BLUE}0 -> Exit APP${RESET}")
             print(s"> ")
             localOption = readLine().trim()
             localOption match {
                 case "1" => prescription.create()
                 case "2" => selectPrescriptionScreen()
-                case "3" => println("Under Construction")
+                case "3" => prescription.readJSON()
                 case "4" => prescription.delete()
                 case "5" => localExit = true
                 case "0" => { localExit = true
@@ -143,31 +144,32 @@ object Main extends App {
         //end prescriptionScreen
     }
 
-    def medicineScreen(): Unit ={
-        var medicine = new Medicine()
+    def drugScreen(): Unit ={
+        var drug = new Drug()
         var localOption = ""
         var localExit = false
         topScreen()
         do {
+
             println()
             println(s"               ${RESET}${GREEN_B}${BOLD}Mecine Screen${RESET}")
             println()
             println(s"${RESET}${BLUE}${BOLD}Select your option: (Type your option number)${RESET}")
             println()
-            println(s"${RESET}${BLUE}1 -> Insert new Medicine${RESET}")
-            println(s"${RESET}${BLUE}2 -> List Medicines${RESET}")
-            println(s"${RESET}${BLUE}3 -> Read JSON file${RESET}")
-            println(s"${RESET}${BLUE}4 -> Delete Medicine${RESET}")
-            println(s"${RESET}${BLUE}5 -> Return to Main Screen${RESET}")
+            println(s"${RESET}${BLUE}1 -> Insert new Drug${RESET}")
+            println(s"${RESET}${BLUE}2 -> List Drugs${RESET}")
+            //println(s"${RESET}${BLUE}5 -> Read JSON file${RESET}")
+            println(s"${RESET}${BLUE}3 -> Delete Drug${RESET}")
+            println(s"${RESET}${BLUE}4 -> Return to previous screen${RESET}")
             println(s"${RESET}${BLUE}0 -> Exit APP${RESET}")
             print(s"> ")
             localOption = readLine().trim()
             localOption match {
-                case "1" => medicine.create()
-                case "2" => medicine.read()
-                case "3" => println("Under Construction")
-                case "4" => medicine.delete()
-                case "5" => localExit = true
+                case "1" => drug.create()
+                case "2" => drug.read()
+                //case "3" => println("Under Construction")
+                case "3" => drug.delete()
+                case "4" => localExit = true
                 case "0" => { localExit = true
                     exit = true}
                 case other => println(s"${RESET}${RED}Wrong option!${RESET}")
@@ -175,7 +177,7 @@ object Main extends App {
             // end match
         }
         while (!localExit)
-        //end medicineScreen
+        //end drugScreen
     }
 
 
@@ -198,6 +200,7 @@ object Main extends App {
         var localExit = false
         topScreen()
         do {
+
             println()
             println(s"               ${RESET}${GREEN_B}${BOLD}Health Data Screen${RESET}")
             println()
@@ -209,7 +212,7 @@ object Main extends App {
             println(s"${RESET}${BLUE}2 -> List Health Data${RESET}")
             println(s"${RESET}${BLUE}3 -> Read Health Data from healthdata.json file${RESET}")
             println(s"${RESET}${BLUE}4 -> Delete Health Data${RESET}")
-            println(s"${RESET}${BLUE}5 -> Return to Main Screen${RESET}")
+            println(s"${RESET}${BLUE}5 -> Return to previous screen${RESET}")
             println(s"${RESET}${BLUE}0 -> Exit APP${RESET}")
             print(s"> ")
             localOption = readLine().trim()
@@ -235,6 +238,7 @@ object Main extends App {
         var localExit = false
         topScreen()
         do {
+
             println()
             println(s"               ${RESET}${GREEN_B}${BOLD}Patient Screen${RESET}")
             println()
@@ -242,9 +246,9 @@ object Main extends App {
             println()
             println(s"${RESET}${BLUE}1 -> Create Patient${RESET}")
             println(s"${RESET}${BLUE}2 -> List all Patients${RESET}")
-            println(s"${RESET}${BLUE}3 -> Read JSON file${RESET}")
+            println(s"${RESET}${BLUE}3 -> Read patient from file${RESET}")
             println(s"${RESET}${BLUE}4 -> Delete Patient${RESET}")
-            println(s"${RESET}${BLUE}5 -> Return to Main Screen${RESET}")
+            println(s"${RESET}${BLUE}5 -> Return to previous screen${RESET}")
             println(s"${RESET}${BLUE}0 -> Exit APP${RESET}")
             print(s"> ")
             localOption = readLine().trim()
@@ -270,37 +274,4 @@ object Main extends App {
         println()
         // end top screen
     }
-
-
-    // calls JSONReader class to test with other files
-    //var path = "/Users/jay85mag/Library/CloudStorage/OneDrive-Personal/00Revature/projects/PHM_CLI/documents/patient2.json"
-//    var path = System.getProperty("user.dir")+"/JSONFiles/patient.json"
-//    import java.nio.file.{Files, Paths}
-//    if(Files.exists(Paths.get(path))){
-//        var tag = Array("patients", "patient")
-//        var elements = 5
-//        var jasonreader = new JSONReader(path, tag, elements)
-//        println(jasonreader.JSONData.length-2)
-//        println(jasonreader.JSONData(0)(0))
-//        println(jasonreader.JSONData(0)(1))
-//        println(jasonreader.JSONData(0)(2))
-//        println(jasonreader.JSONData(0)(3))
-//        println(jasonreader.JSONData(0)(4))
-//        println(jasonreader.JSONData.length-1)
-//        println(jasonreader.JSONData(1)(0))
-//        println(jasonreader.JSONData(1)(1))
-//        println(jasonreader.JSONData(1)(2))
-//        println(jasonreader.JSONData(1)(3))
-//        println(jasonreader.JSONData(1)(4))
-//        println(jasonreader.JSONData.length-0)
-//        println(jasonreader.JSONData(2)(0))
-//        println(jasonreader.JSONData(2)(1))
-//        println(jasonreader.JSONData(2)(2))
-//        println(jasonreader.JSONData(2)(3))
-//        println(jasonreader.JSONData(2)(4))
-//    } else {
-//        println("JSON file does not exists")
-//    }
-
-
 }
