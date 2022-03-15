@@ -10,10 +10,10 @@ The system controls basic health and prescription information. The user can inse
 More information about the classes and the data moidel are located in the documents directory in a Class Diagram and a ERD.
 
 Follow the below step to replicate it:
-- dowload/clone the repository
+- download/clone the repository
 - create a new database called alvicenna
 - create a user to acces the new schema
 - create the schema using the database.sql script located in the sqlScripts directory
 - update the ExecuteQuery class with the username and password to acces the new database
 - import the drugs name from drugcodes.csv into the column name in table Drug
-- run the main object
+- run the object Main.
