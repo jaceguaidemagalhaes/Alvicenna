@@ -1,0 +1,31 @@
+{
+  "patients": [
+    {
+      "patient": {
+        "firstName": "pedro1",
+        "lastName": "ramos",
+        "birthday": "",
+        "gender": "Male",
+        "email": "pedro@test.com"
+      }
+    },
+    {
+      "patient": {
+        "firstName": "maria1",
+        "lastName": "ramos",
+        "birthday": "10/02/2010",
+        "gender": "",
+        "email": "pedro@test.com"
+      }
+    },
+    {
+      "patient": {
+        "firstName": "patients1",
+        "lastName": "patient",
+        "birthday": "10/02/2010",
+        "gender": "Female",
+        "email": ""
+      }
+      }
+  ]
+}

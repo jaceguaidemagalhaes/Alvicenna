@@ -1,0 +1,15 @@
+{
+  "healthdata": [
+    {
+      "healthdata": {
+        "temperature": "95",
+        "pulse": "65",
+        "readingTime": "03/15/2021",
+        "observations": "Data read in office by nurse.",
+        "systolic": "132",
+        "diastolic": "85",
+        "oxygenlevel": "96"
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "prescriptions": [
+    {
+      "prescription": {
+        "drugid": "5",
+        "instructions": "Be careful with this drug"
+      }
+    },
+        {
+          "prescription": {
+            "drugid": "342",
+            "instructions": "Take two when in pain."
+          }
+    },
+    {
+      "prescription": {
+        "drugid": "351",
+        "instructions": "Take one daily"
+      }
+    }
+  ]
+}
